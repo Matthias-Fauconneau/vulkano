@@ -16,7 +16,7 @@ use std::{
     cmp,
     collections::{btree_map, BTreeMap},
     fmt::{Debug, Error as FmtError, Formatter},
-    iter::{FromIterator, FusedIterator},
+    iter::FusedIterator,
     ops::{Bound, Range},
 };
 

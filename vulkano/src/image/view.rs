@@ -875,25 +875,6 @@ pub struct ImageViewCreateInfo {
     pub _ne: crate::NonExhaustive,
 }
 
-impl Default for ImageViewCreateInfo {
-    #[inline]
-    fn default() -> Self {
-        Self {
-            view_type: ImageViewType::Dim2d,
-            format: Format::UNDEFINED,
-            component_mapping: ComponentMapping::identity(),
-            subresource_range: ImageSubresourceRange {
-                aspects: ImageAspects::empty(),
-                array_layers: 0..0,
-                mip_levels: 0..0,
-            },
-            usage: ImageUsage::empty(),
-            sampler_ycbcr_conversion: None,
-            _ne: crate::NonExhaustive(()),
-        }
-    }
-}
-
 impl ImageViewCreateInfo {
     /// Returns an `ImageViewCreateInfo` with the `view_type` determined from the image type and
     /// array layers, and `subresource_range` determined from the image format and covering the
@@ -919,8 +900,11 @@ impl ImageViewCreateInfo {
                 ImageType::Dim3d => ImageViewType::Dim3d,
             },
             format: image.format(),
+            component_mapping: ComponentMapping::identity(),
             subresource_range: image.subresource_range(),
-            ..Default::default()
+			usage: ImageUsage::empty(),
+            sampler_ycbcr_conversion: None,
+            _ne: crate::NonExhaustive(())
         }
     }
 

@@ -5,11 +5,13 @@ layout(location = 1) in vec3 normal;
 
 layout(location = 0) out vec3 v_normal;
 
-layout(set = 0, binding = 0) uniform Data {
+struct Uniforms {
     mat4 world;
     mat4 view;
     mat4 proj;
-} uniforms;
+};
+
+layout(set = 0, binding = 0) uniform Uniforms uniforms;
 
 void main() {
     mat4 worldview = uniforms.view * uniforms.world;

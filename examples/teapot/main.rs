@@ -334,10 +334,10 @@ fn main() -> Result<(), impl Error> {
                     );
                     let scale = Mat4::from_scale(Vec3::splat(0.01));
 
-                    let uniform_data = vs::Data {
-                        world: Mat4::from_mat3(rotation).to_cols_array_2d(),
-                        view: (view * scale).to_cols_array_2d(),
-                        proj: proj.to_cols_array_2d(),
+                    let uniform_data = vs::Uniforms {
+                        world: Matrix4::from(rotation).into(),
+                        view: (view * scale).into(),
+                        proj: proj.into(),
                     };
 
                     let subbuffer = uniform_buffer.allocate_sized().unwrap();
@@ -549,16 +549,5 @@ fn window_size_dependent_setup(
     (pipeline, framebuffers)
 }
 
-mod vs {
-    vulkano_shaders::shader! {
-        ty: "vertex",
-        path: "vert.glsl",
-    }
-}
-
-mod fs {
-    vulkano_shaders::shader! {
-        ty: "fragment",
-        path: "frag.glsl",
-    }
-}
+mod vs { vulkano_shaders::shader!{ty: "vertex", bytes: "vert.spv"} }
+mod fs { vulkano_shaders::shader!{ty: "fragment", bytes: "frag.spv"} }
