@@ -326,6 +326,7 @@ impl FixedEntry {
         layout: &Arc<DescriptorSetLayout>,
         create_info: &StandardDescriptorSetAllocatorCreateInfo,
     ) -> Result<Self, Validated<VulkanError>> {
+		assert!(!layout.descriptor_counts().is_empty());
         let pool = DescriptorPool::new(
             layout.device().clone(),
             DescriptorPoolCreateInfo {
@@ -339,6 +340,7 @@ impl FixedEntry {
                     .iter()
                     .map(|(&ty, &count)| {
                         assert_ne!(ty, DescriptorType::InlineUniformBlock);
+																								assert!(count != 0);
                         (ty, count * create_info.set_count as u32)
                     })
                     .collect(),

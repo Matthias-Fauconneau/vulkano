@@ -497,6 +497,14 @@ fn inspect_entry_point(
                         self.instruction_chain([], image);
                     }
 
+					Instruction::ImageFetch { image, .. } => {
+                        if let Some(desc_reqs) =
+                            desc_reqs(self.instruction_chain([inst_load], image))
+                        {
+                            desc_reqs.memory_read = stage.into();
+                        }
+                    }
+
                     Instruction::ImageRead { image, .. } => {
                         if let Some(desc_reqs) =
                             desc_reqs(self.instruction_chain([inst_load], image))
