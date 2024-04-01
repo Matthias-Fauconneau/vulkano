@@ -3328,7 +3328,7 @@ impl RecordingCommandBuffer {
                     }));
                 }
 
-                if pipeline_rendering_info.color_attachment_formats.len()
+                if !self.device().enabled_features().dynamic_rendering_unused_attachments && pipeline_rendering_info.color_attachment_formats.len()
                     != render_pass_state
                         .rendering_info
                         .color_attachment_formats
