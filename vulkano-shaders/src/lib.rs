@@ -9,8 +9,7 @@ use proc_macro::{TokenTree, TokenStream, Ident, Literal, Span, quote};
 		let Instruction::TypeStruct{result_id: id, member_types} = spirv_struct else { return None; };
 		let name_from_id = |id| spirv.id(id).names().iter().find_map(|instruction| if let Instruction::Name{name, .. } = instruction { Some(name) } else { None });
 		let name = name_from_id(*id)?;
-		//if name != "Uniforms" { return None; }
-		let mut dst = None;
+		if name != "Uniforms" && name != "RuntimeArrayItemType" { return None; }
 		let members = TokenStream::from_iter(member_types.iter().zip(spirv.id(*id).members()).map(|(&id, field)| {
 			let member_name = field.names().iter().find_map(|instruction| if let Instruction::MemberName { name, .. } = instruction { Some(TokenTree::Ident(Ident::new(name, Span::call_site()))) } else { None }).expect("name");
 			match spirv.id(id).instruction() {
@@ -23,22 +22,10 @@ use proc_macro::{TokenTree, TokenStream, Ident, Literal, Span, quote};
 					let ty = TokenTree::Ident(Ident::new(name_from_id(id).unwrap(), Span::call_site()));
 					quote!(pub $member_name: $ty,)
 				}
-				Instruction::TypeRuntimeArray{element_type: id, ..} => {
-					dst = Some(TokenTree::Ident(Ident::new(name_from_id(*id).unwrap(), Span::call_site())));
-					quote!(pub $member_name: T,)
-					//quote!(pub $member_name: [$ty],)
-				}
 				t => unimplemented!("Unimplemented type conversion (SPV->Rust) {t:?}")
 			}
 		}));
 		let name = TokenTree::Ident(Ident::new(name, Span::call_site()));
-		if dst.is_none() {
-			Some(quote!{#[repr(C)]#[derive(Clone,Copy,bytemuck::Zeroable,Debug)] pub struct $name { $members }})
-		} else {
-			let ty = dst.unwrap();
-			Some(quote!{
-				#[repr(C)]#[derive(Debug)] pub struct $name<T:?Sized=[$ty]> { $members }
-			})
-		}
+		Some(quote!{#[repr(C)]#[derive(vulkano::buffer::subbuffer::BufferContents,Clone,Copy)] pub struct $name { $members }})
 	}))
 }
