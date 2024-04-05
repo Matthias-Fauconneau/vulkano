@@ -31,10 +31,6 @@ pub struct SpirvInstruction {
     pub opcode: u16,
     #[serde(default)]
     pub operands: Vec<SpirvOperand>,
-    // #[serde(default)]
-    // pub capabilities: Vec<String>,
-    // #[serde(default)]
-    // pub extensions: Vec<String>,
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -58,8 +54,6 @@ pub struct SpirvKindEnumerant {
     pub value: Value,
     #[serde(default)]
     pub parameters: Vec<SpirvParameter>,
-    // #[serde(default)]
-    // pub capabilities: Vec<String>,
 }
 
 #[derive(Clone, Debug, Deserialize)]
