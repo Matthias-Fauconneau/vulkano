@@ -1,5 +1,5 @@
 use crate::{
-    command_buffer::sys::RawRecordingCommandBuffer,
+    command_buffer::{RecordingCommandBuffer, sys::RawRecordingCommandBuffer},
     device::{DeviceOwned, QueueFlags},
     sync::{
         event::Event, BufferMemoryBarrier, DependencyFlags, DependencyInfo, ImageMemoryBarrier,
@@ -9,6 +9,50 @@ use crate::{
 };
 use smallvec::SmallVec;
 use std::{ptr, sync::Arc};
+
+impl RecordingCommandBuffer {
+	pub fn pipeline_barrier(
+			&mut self,
+			dependency_info: DependencyInfo,
+	) -> Result<&mut Self, Box<ValidationError>> {
+		self.validate_pipeline_barrier(&dependency_info)?;
+
+			unsafe { Ok(self.pipeline_barrier_unchecked(dependency_info)) }
+	}
+
+	fn validate_pipeline_barrier(
+			&self,
+			dependency_info: &DependencyInfo,
+	) -> Result<(), Box<ValidationError>> {
+			self.inner.validate_pipeline_barrier(dependency_info)?;
+
+			if self.builder_state.render_pass.is_some() {
+					return Err(Box::new(ValidationError {
+							problem: "a render pass instance is active".into(),
+							vuids: &["VUID-vkCmdCopyBuffer2-renderpass"],
+							..Default::default()
+					}));
+			}
+
+			Ok(())
+	}
+
+	#[cfg_attr(not(feature = "document_unchecked"), doc(hidden))]
+	pub unsafe fn pipeline_barrier_unchecked(
+			&mut self,
+			dependency_info: DependencyInfo,
+	) -> &mut Self {
+			self.add_command(
+					"pipeline_barrier",
+					vec![],
+					move |out: &mut RawRecordingCommandBuffer| {
+							out.pipeline_barrier_unchecked(&dependency_info);
+					},
+			);
+
+			self
+	}
+}
 
 impl RawRecordingCommandBuffer {
     #[inline]

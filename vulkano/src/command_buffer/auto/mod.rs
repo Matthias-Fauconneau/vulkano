@@ -327,8 +327,8 @@ mod tests {
         image::sampler::{Sampler, SamplerCreateInfo},
         memory::allocator::{AllocationCreateInfo, MemoryTypeFilter, StandardMemoryAllocator},
         pipeline::{layout::PipelineLayoutCreateInfo, PipelineBindPoint, PipelineLayout},
-        shader::ShaderStages,
         sync::GpuFuture,
+        shader::ShaderStages,
     };
     use std::sync::Arc;
 

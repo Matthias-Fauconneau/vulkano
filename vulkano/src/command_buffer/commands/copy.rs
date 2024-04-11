@@ -246,7 +246,6 @@ impl RecordingCommandBuffer {
             ref dst_image,
             dst_image_layout,
             ref regions,
-            _ne: _,
         } = &copy_buffer_to_image_info;
 
         self.add_command(
@@ -1166,7 +1165,6 @@ impl RawRecordingCommandBuffer {
             ref dst_image,
             dst_image_layout: _,
             ref regions,
-            _ne,
         } = copy_buffer_to_image_info;
 
         let dst_image_format = dst_image.format();
@@ -1363,7 +1361,6 @@ impl RawRecordingCommandBuffer {
             ref dst_image,
             dst_image_layout,
             ref regions,
-            _ne: _,
         } = copy_buffer_to_image_info;
 
         if regions.is_empty() {
@@ -3826,8 +3823,6 @@ pub struct CopyBufferToImageInfo {
     /// The default value is a single region, covering all of the buffer and the first mip level of
     /// the image. All aspects of the image are selected, or `plane0` if the image is multi-planar.
     pub regions: SmallVec<[BufferImageCopy; 1]>,
-
-    pub _ne: crate::NonExhaustive,
 }
 
 impl CopyBufferToImageInfo {
@@ -3846,7 +3841,6 @@ impl CopyBufferToImageInfo {
             dst_image,
             dst_image_layout: ImageLayout::TransferDstOptimal,
             regions: smallvec![region],
-            _ne: crate::NonExhaustive(()),
         }
     }
 
@@ -3856,7 +3850,6 @@ impl CopyBufferToImageInfo {
             ref dst_image,
             dst_image_layout,
             ref regions,
-            _ne: _,
         } = self;
 
         dst_image_layout.validate_device(device).map_err(|err| {
