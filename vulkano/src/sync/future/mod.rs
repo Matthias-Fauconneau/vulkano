@@ -727,16 +727,11 @@ pub(crate) unsafe fn queue_submit(
                             };
 
                             if let Err(error) = result {
-                                return Err(Box::new(ValidationError {
-                                    problem: format!(
+                                println!("{:?}", format!(
                                         "access to a resource has been denied \
                                         (resource use: {:?}, error: {})",
                                         range_usage.first_use, error
-                                    )
-                                    .into(),
-                                    ..Default::default()
-                                })
-                                .into());
+                                    ));
                             }
                         }
                         _ => (),
