@@ -16,3 +16,9 @@ png = { workspace = true }
 vulkano = { workspace = true, features = ["macros"]  }
 vulkano-shaders = { workspace = true }
 winit = { workspace = true, default-features = true }
+bytemuck = { version = '*', features = ['extern_crate_alloc'] }
+#fehler = '*'
+
+[build-dependencies]
+naga = {version='*', features = ['wgsl-in','spv-out']}
+bytemuck = '*'
