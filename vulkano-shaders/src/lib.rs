@@ -1,3 +1,4 @@
+#![feature(proc_macro_quote)]
 struct MacroInput(syn::Ident);
 impl syn::parse::Parse for MacroInput { fn parse(input: syn::parse::ParseStream<'_>) -> syn::Result<Self> { Ok(Self(input.parse::<syn::Ident>()?)) } }
 use proc_macro::{TokenTree, TokenStream, Ident, Literal, Span, quote};
