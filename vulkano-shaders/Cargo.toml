@@ -21,6 +21,7 @@ syn = { workspace = true }
 vulkano = { workspace = true }
 bytemuck = '*'
 fehler = '*'
+half = '*'
 
 [lints]
 workspace = true
