@@ -13,7 +13,11 @@ use proc_macro::{TokenTree, TokenStream, Ident, Literal, Span, quote};
 		let members = TokenStream::from_iter(member_types.iter().zip(spirv.id(*id).members()).map(|(&id, field)| {
 			let member_name = field.names().iter().find_map(|instruction| if let MemberName { name, .. } = instruction { Some(TokenTree::Ident(Ident::new(name, Span::call_site()))) } else { None }).expect("name");
 			match spirv.id(id).instruction() {
-				TypeFloat{..} => quote!(pub $member_name: half::f16,),
+				TypeFloat{width, ..} => match width {
+					16 => quote!(pub $member_name: half::f16,),
+					32 => quote!(pub $member_name: f32,),
+					_ => unimplemented!()
+				},
 				TypeInt{..} => quote!(pub $member_name: u32,),
 				&TypeVector{component_count, component_type, ..} => {
 					let component_count = TokenTree::Literal(Literal::usize_unsuffixed(component_count as usize));
