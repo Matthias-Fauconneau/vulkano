@@ -24,9 +24,11 @@ use proc_macro::{TokenTree, TokenStream, Ident, Literal, Span, quote};
 						_ => unimplemented!()
 					}
 				},
-				TypeMatrix{column_count, ..} => {
-					let column_count = TokenTree::Literal(Literal::usize_unsuffixed(*column_count as usize));
-					quote!(pub $member_name: [[f32; $column_count]; $column_count],)
+				TypeMatrix{column_count: column, column_type: id, ..} => {
+					let TypeVector{component_count: row, ..} = spirv.id(*id).instruction() else {unimplemented!()};
+					let row = match row { 3=>4, 4=>4, _=>unimplemented!() };
+					let [row, column] = [row,*column].map(|v| TokenTree::Literal(Literal::usize_unsuffixed(v as usize)));
+					quote!(pub $member_name: [[f32; $row]; $column],)
 				},
 				TypeStruct{..} => {
 					let ty = TokenTree::Ident(Ident::new(name_from_id(id).unwrap(), Span::call_site()));

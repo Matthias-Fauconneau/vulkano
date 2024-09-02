@@ -1,3 +1,4 @@
+Cargo.lock
 target
 .cargo
 examples/dynamic-local-size/mandelbrot.png
